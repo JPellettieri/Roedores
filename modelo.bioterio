@@ -1,0 +1,45 @@
+
+           model{
+           # Observations
+           for (i in 1:Nbiot){
+                E_sz[i] <- sz0 + sz1 * (1 - exp(-x[i]/T1) + rsz * x[i])
+                E_wg[i] <- wg0 + wg1 * (1 - exp(-x[i]/T1) + rwg * x[i]) 
+                sz[i] ~ dnorm(E_sz[i], tau_sz[i])
+                wg[i] ~ dnorm(E_wg[i], tau_wg[i])
+           }
+        # Errors in bioterium data
+           for (i in 1:Nbiot){
+                tau_sz[i] <- pow(sigma_sz, -2) * sz_n[i]
+                tau_wg[i] <- pow(sigma_wg, -2) * wg_n[i]
+           }
+           
+           # Priors
+           # dgamma(a,b) => E(x) = a/b; Var(x) = a/b^2 => b = E(x)/Var(x); a = E(x)^2/Var(x)
+           # a = shape, b = rate = 1/s (s = scale)
+           
+           # incertezas en largo/peso
+           sigma_sz ~ dgamma(1.0, 0.2) # E = 5; Var = 25
+           sigma_wg ~ dgamma(0.1, 0.1) # E = 1; Var = 10
+           
+           # largo/peso al nacer
+           sz0 ~ dunif(25,50) # (mm)
+           wg0 ~ dunif(0,5) # (g)
+           
+           # T1 = duración de la etapa rápida
+           T1 ~ dgamma(1.0, 12) # E = 1 month; Var = E^2
+        
+           # variacion de largo/peso en etapa rápida
+           sz1 ~ dgamma(1.10,0.01) # E = 100; Var = E^2 # (mm)
+           wg1 ~ dgamma(1.10,0.04) # E = 25; Var = E^2 # (g)
+           
+           # variacion de largo/peso en etapa lenta (<< r1)
+           rsz ~ dgamma(1.1,1) # E = 1; Var = E^2 # (mm)
+           rwg ~ dgamma(1.1,10) # E = 0.1; Var = E^2 # (g)
+    
+            # Extrapolation of fitted models
+            for(i in 1:25){
+                sz_fit[i] <- sz0 + sz1 * (1 - exp(-xfit[i]/T1) + rsz * xfit[i])
+                wg_fit[i] <- wg0 + wg1 * (1 - exp(-xfit[i]/T1) + rwg * xfit[i])
+            }
+           }
+           

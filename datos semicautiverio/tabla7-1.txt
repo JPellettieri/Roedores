@@ -1,0 +1,6 @@
+Caract	media	error
+PesoN	2.6	0.7
+PesoD	7.9	1.6
+LongN	38.5	5.6
+LongD	76.7	8.6
+

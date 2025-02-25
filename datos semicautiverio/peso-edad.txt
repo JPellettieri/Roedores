@@ -1,0 +1,23 @@
+Age	Weight	Season
+0	2.371	Early
+0	2.704	Mid
+0	3.222	Late
+5	4.555	Early
+5	4.333	Mid
+5	6.074	Late
+10	6.222	Early
+10	5.778	Mid
+10	7.37	Late
+15	7.37	Early
+15	6.666	Mid
+15	8.814	Late
+20	8.592	Early
+20	7.185	Mid
+20	9.666	Late
+25	8.851	Early
+25	7.925	Mid
+25	10.185	Late
+30	10.296	Early
+30	9.407	Mid
+30	10.777	Late
+

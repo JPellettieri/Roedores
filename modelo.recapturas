@@ -1,0 +1,39 @@
+
+           model{
+        # Campo
+           for (i in 1:Nrecap){
+           xo[i] <- t[i] - tn[idn[i]]
+           E_szo[i] <- sz0[idn[i]] + sz1[idn[i]] * (1 - exp(-xo[i]/T1[idn[i]]) + rszo[idn[i]] * xo[i])
+           E_wgo[i] <- wg0[idn[i]] + wg1[idn[i]] * (1 - exp(-xo[i]/T1[idn[i]]) + rwgo[idn[i]] * xo[i]) + pr[i] * wg_xtra_pr 
+           szo[i] ~ dnorm(E_szo[i], pow(sigma_szo,-2))
+           wgo[i] ~ dnorm(E_wgo[i], pow(sigma_wgo,-2))
+           }
+
+           # Priors
+           # dgamma(a,b) => E(x) = a/b; Var(x) = a/b^2 => b = E(x)/Var(x); a = E(x)^2/Var(x)
+           # a = shape, b = rate = 1/s (s = scale)
+           
+           # incertezas en largo/peso
+           sigma_szo ~ dgamma(1.0, 0.2) # E = 5; Var = 25
+           sigma_wgo ~ dgamma(0.1, 0.1) # E = 1; Var = 10
+
+           for (i in 1:Nraton){
+             tn[i] ~ dunif(t1[i] - 5.5, t0[i])
+             T1[i] ~ dgamma(T1_shape, T1_rate)
+             sz0[i] ~ dgamma(sz0_shape, sz0_rate)
+             sz1[i] ~ dgamma(sz1_shape, sz1_rate)
+             wg0[i] ~ dgamma(wg0_shape, wg0_rate)
+             wg1[i] ~ dgamma(wg1_shape, wg1_rate)
+             rszo[i] ~ dnorm(rsz_mean,rsz_tau) 
+             rwgo[i] ~ dnorm(rwg_mean,rwg_tau)
+           for(j in 1:21){
+             sz_fit[j,i] <- sz0[i] + sz1[i] * (1 - exp(-x_fit[j]/T1[i]) + rszo[i] * x_fit[j])
+             wg_fit[j,i] <- wg0[i] + wg1[i] * (1 - exp(-x_fit[j]/T1[i]) + rwgo[i] * x_fit[j])
+           }
+           }
+           
+           # peso adicional por preñez
+           wg_xtra_pr  ~ dgamma(24,2) # E = 12; Var = E^2 # (g)
+           
+           }
+           
